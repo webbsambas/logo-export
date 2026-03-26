@@ -4,69 +4,127 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@800&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { background: white; padding: 40px; }
-
-  .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 16px;
-    background: white;
-  }
-  .icon-box {
-    width: 32px; height: 32px;
-    border-radius: 8px;
-    background: #2563eb;
-    display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0;
-  }
-  .icon-box svg { width: 18px; height: 18px; }
-  .text {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    font-weight: 800;
-    font-size: 18px;
-    letter-spacing: -0.025em;
-    color: #111827;
-    white-space: nowrap;
-  }
-  .text .blue { color: #2563eb; }
-
-  h2 { font-family: sans-serif; font-size: 14px; color: #666; margin: 30px 0 10px; }
-  .divider { border-top: 1px solid #eee; margin: 30px 0; }
-
-  .favicon-box {
-    width: 128px; height: 128px;
-    border-radius: 24px;
-    background: #2563eb;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .favicon-box svg { width: 72px; height: 72px; }
+  body { background: #f5f5f5; padding: 40px; font-family: sans-serif; }
+  h2 { font-size: 14px; color: #666; margin: 30px 0 10px; }
+  .divider { border-top: 1px solid #ddd; margin: 30px 0; }
+  canvas { border: 1px solid #ddd; background: white; display: block; margin: 10px 0; }
+  a.download { display: inline-block; margin: 8px 0; padding: 12px 24px; background: #2563eb; color: white; text-decoration: none; border-radius: 8px; font-weight: 700; font-size: 16px; }
+  a.download:hover { background: #1d4ed8; }
 </style>
 </head>
 <body>
 
-<h2>CHECKOUT LOGO — right-click > Save image as:</h2>
-<div class="logo">
-  <div class="icon-box">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect width="10" height="14" x="3" y="8" rx="2"/>
-      <path d="M5 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-2.4"/>
-      <path d="M8 18h.01"/>
-    </svg>
-  </div>
-  <span class="text">Easy<span class="blue">Guard</span></span>
-</div>
+<h1 style="margin-bottom: 30px;">EasyGuard — Shopify Branding Downloads</h1>
+
+<h2>CHECKOUT LOGO</h2>
+<canvas id="logoCanvas"></canvas>
+<a id="logoDownload" class="download" download="easyguard-checkout-logo.png">Download Logo PNG</a>
 
 <div class="divider"></div>
 
-<h2>FAVICON — right-click > Save image as:</h2>
-<div class="favicon-box">
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-    <rect width="10" height="14" x="3" y="8" rx="2"/>
-    <path d="M5 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-2.4"/>
-    <path d="M8 18h.01"/>
-  </svg>
-</div>
+<h2>FAVICON (512x512)</h2>
+<canvas id="faviconCanvas" style="width:256px;height:256px;"></canvas>
+<a id="faviconDownload" class="download" download="easyguard-favicon.png">Download Favicon PNG</a>
 
+<script>
+document.fonts.ready.then(function() {
+
+  // === CHECKOUT LOGO ===
+  var lc = document.getElementById('logoCanvas');
+  var ctx = lc.getContext('2d');
+  var dpr = 2;
+  var W = 300, H = 64;
+  lc.width = W * dpr;
+  lc.height = H * dpr;
+  lc.style.width = W + 'px';
+  lc.style.height = H + 'px';
+  ctx.scale(dpr, dpr);
+
+  ctx.fillStyle = 'white';
+  ctx.fillRect(0, 0, W, H);
+
+  // Blue rounded box 32x32
+  var bx = 16, by = 16;
+  roundRect(ctx, bx, by, 32, 32, 8);
+  ctx.fillStyle = '#2563eb';
+  ctx.fill();
+
+  // TabletSmartphone icon 18x18 centered in box
+  drawIcon(ctx, bx + 7, by + 7, 18/24);
+
+  // Text
+  ctx.font = '800 18px Inter, system-ui, sans-serif';
+  ctx.textBaseline = 'middle';
+  ctx.fillStyle = '#111827';
+  var tx = bx + 32 + 8;
+  ctx.fillText('Easy', tx, 32);
+  var ew = ctx.measureText('Easy').width;
+  ctx.fillStyle = '#2563eb';
+  ctx.fillText('Guard', tx + ew, 32);
+
+  document.getElementById('logoDownload').href = lc.toDataURL('image/png');
+
+  // === FAVICON ===
+  var fc = document.getElementById('faviconCanvas');
+  var fctx = fc.getContext('2d');
+  fc.width = 512;
+  fc.height = 512;
+
+  roundRect(fctx, 0, 0, 512, 512, 80);
+  fctx.fillStyle = '#2563eb';
+  fctx.fill();
+
+  drawIcon(fctx, 116, 116, 280/24);
+
+  document.getElementById('faviconDownload').href = fc.toDataURL('image/png');
+
+  function roundRect(c, x, y, w, h, r) {
+    c.beginPath();
+    c.moveTo(x+r, y);
+    c.lineTo(x+w-r, y);
+    c.quadraticCurveTo(x+w, y, x+w, y+r);
+    c.lineTo(x+w, y+h-r);
+    c.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+    c.lineTo(x+r, y+h);
+    c.quadraticCurveTo(x, y+h, x, y+h-r);
+    c.lineTo(x, y+r);
+    c.quadraticCurveTo(x, y, x+r, y);
+    c.closePath();
+  }
+
+  function drawIcon(c, ox, oy, s) {
+    c.save();
+    c.translate(ox, oy);
+    c.scale(s, s);
+    c.strokeStyle = 'white';
+    c.lineWidth = 2;
+    c.lineCap = 'round';
+    c.lineJoin = 'round';
+
+    // Tablet rect: x=3 y=8 w=10 h=14 rx=2
+    roundRect(c, 3, 8, 10, 14, 2);
+    c.stroke();
+
+    // Phone path: M5 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2h-2.4
+    c.beginPath();
+    c.moveTo(5, 4);
+    c.arc(7, 4, 2, Math.PI, Math.PI*1.5);
+    c.lineTo(19, 2);
+    c.arc(19, 4, 2, -Math.PI/2, 0);
+    c.lineTo(21, 20);
+    c.arc(19, 20, 2, 0, Math.PI/2);
+    c.lineTo(16.6, 22);
+    c.stroke();
+
+    // Dot: M8 18h.01
+    c.beginPath();
+    c.arc(8, 18, 0.5, 0, Math.PI*2);
+    c.fillStyle = 'white';
+    c.fill();
+
+    c.restore();
+  }
+});
+</script>
 </body>
 </html>
