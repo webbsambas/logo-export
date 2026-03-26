@@ -33,17 +33,17 @@ document.fonts.ready.then(function() {
   var lc = document.getElementById('logoCanvas');
   var ctx = lc.getContext('2d');
   var dpr = 2;
-  var W = 220, H = 40;
+  var W = 300, H = 64;
   lc.width = W * dpr;
   lc.height = H * dpr;
   lc.style.width = W + 'px';
   lc.style.height = H + 'px';
   ctx.scale(dpr, dpr);
 
-  // Transparent background (no white fill)
+  // Transparent background
 
   // Blue rounded box 32x32
-  var bx = 0, by = 4;
+  var bx = 16, by = 16;
   roundRect(ctx, bx, by, 32, 32, 8);
   ctx.fillStyle = '#2563eb';
   ctx.fill();
