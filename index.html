@@ -33,17 +33,26 @@ document.fonts.ready.then(function() {
   var lc = document.getElementById('logoCanvas');
   var ctx = lc.getContext('2d');
   var dpr = 2;
-  var W = 300, H = 64;
+
+  // First measure text width to size canvas exactly
+  var tempCanvas = document.createElement('canvas');
+  var tempCtx = tempCanvas.getContext('2d');
+  tempCtx.font = '800 18px Inter, system-ui, sans-serif';
+  var textW = tempCtx.measureText('EasyGuard').width;
+  var totalW = 32 + 8 + textW; // icon + gap + text
+  var H = 32;
+  var W = Math.ceil(totalW);
+
   lc.width = W * dpr;
   lc.height = H * dpr;
   lc.style.width = W + 'px';
   lc.style.height = H + 'px';
   ctx.scale(dpr, dpr);
 
-  // Transparent background
+  // Transparent background — canvas fits content exactly
 
   // Blue rounded box 32x32
-  var bx = 16, by = 16;
+  var bx = 0, by = 0;
   roundRect(ctx, bx, by, 32, 32, 8);
   ctx.fillStyle = '#2563eb';
   ctx.fill();
@@ -55,11 +64,11 @@ document.fonts.ready.then(function() {
   ctx.font = '800 18px Inter, system-ui, sans-serif';
   ctx.textBaseline = 'middle';
   ctx.fillStyle = '#111827';
-  var tx = bx + 32 + 8;
-  ctx.fillText('Easy', tx, 32);
+  var tx = 32 + 8;
+  ctx.fillText('Easy', tx, 16);
   var ew = ctx.measureText('Easy').width;
   ctx.fillStyle = '#2563eb';
-  ctx.fillText('Guard', tx + ew, 32);
+  ctx.fillText('Guard', tx + ew, 16);
 
   document.getElementById('logoDownload').href = lc.toDataURL('image/png');
 
